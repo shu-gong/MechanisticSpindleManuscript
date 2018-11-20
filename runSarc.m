@@ -333,7 +333,7 @@
 %                 if a > 1
 %                     delta_cdl(a,i) = 0.1*lsf; %elastic rebound of tendon (none if tendon is rigid)
 %                 end
-            elseif i == pertStart+strDur+9 %Difference between 10 m/s and 100 m/s axon delays
+            elseif i == pertStart+strDur %Difference between 10 m/s and 100 m/s axon delays
                 delta_f_activated(a,i) = -0.0004*strDur;                
             end
         end

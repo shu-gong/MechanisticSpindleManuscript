@@ -146,7 +146,7 @@ plot(acc,IB,'.','MarkerSize',10)
 load(['..' filesep 'data' filesep '2018-08-23' filesep 'THD 2018-08-23.mat']);
 idx = 4000:17000;
 time = dataS(1).t(idx);
-L0 = dataF.hs_length(1);
+L0 = dataS(1).hs_length(1);
 
 hfig = figure;
 set(hfig,'Color','White')
@@ -186,8 +186,8 @@ end
 %% Spindle model - ACT
 clear, clc
 
-load(['..' filesep 'data' filesep '2018-08-23' filesep 'ActRH 2018-08-23.mat']);
-load(['..' filesep 'data' filesep 'test2.mat']);
+load(['..' filesep 'data' filesep '2018-08-23' filesep 'ActRH 2018-10-23.mat']);
+% load(['..' filesep 'data' filesep 'test4.mat']);
 
 time = dataS(1).t;
 L0 = dataS(1).hs_length(1);
@@ -268,8 +268,9 @@ end
 
 %% Supplemental - Day sinusoids
 
-load(['data' filesep 'DaySinusoid.mat']);
-time = data(1).t;
+% load(['data' filesep 'DaySinusoid.mat']);
+load(['..' filesep 'data' filesep 'test4.mat']);
+time = dataS(1).t;
 
 hfig = figure;
 set(hfig,'Color','White')
@@ -277,7 +278,7 @@ set(hfig,'Color','White')
 
 kFs = 1.8;
 kFd = 2;
-kY = 0.5;
+kY = 0.15;
 
 % hmus = subplot(3,2,1:2); hold on;
 % set(hmus,'TickDir','out','FontName','Arial','FontSize',10,...
@@ -296,9 +297,9 @@ axis([-1 11.5 -0.5 0.5])
 % axis([-1 11.5 1300 1500])
 
 % for a = [1 2 3 4 5 8]
-    dataY = data;
-    dataF = data;
-    [r,rs,rd] = sarc2spindle(dataY,dataF,kFs,kFd,kY,0);
+    dataY = dataD;
+    dataF = dataS;
+    [r,rs,rd] = sarc2spindle(dataY,dataF,kFs,kFd,kY,0,0.09);
 %     h_f = line(time,dataF.hs_force/10^6,'Parent',hmus);
     h_r = line(time,r,'Parent',haff);
     h_cdl = line(time,dataF.cmd_length/1300-1,'Parent',haff);
@@ -382,7 +383,7 @@ end
 
 %% Spindle Model - Alpha-gamma coactivation
 % load(['..' filesep 'data' filesep '2018-08-23' filesep 'Alpha-gamma ramp 2018-09-21.mat'])
-load(['..' filesep 'data' filesep 'test3.mat'])
+load(['..' filesep 'data' filesep '2018-08-23' filesep 'alphaGamma2018-10-23.mat'])
 idx = 4000:9000;
 time = dataS(1).t(idx);
 L0 = dataS(1).hs_length(1);
