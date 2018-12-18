@@ -6,12 +6,14 @@ classdef halfSarc < handle
         % INITIAL STATE PARAMETERS %
         cmd_length = 1300;
         hs_length = 1300;   % the initial length of the half-sarcomere in nm
+        slack = 0;
         hs_force;           % the stress (in N m^(-2)) in the half-sarcomere
         f_overlap;
         f_bound;
         f_activated = 0.0;
         cb_force;
         passive_force;
+        Ca = 10^(-6.5);     % Ca concentration (in M)
 
         % DISTRIBUTION BIN PARAMETERS %
         bin_min = -20;      % min x value for myosin distributions in nm
@@ -24,6 +26,9 @@ classdef halfSarc < handle
         k_cb = 0.001;       % Cross-bridge stiffness in N m^-1
         power_stroke = 2.5;   % Cross-bridge power-stroke in nm
         
+        % THIN FILAMENT PARAMETERS %
+        a_on = 1e6;      % on_rate (in s^-1 M^-1) for binding sites
+        a_off = 20;          % off_rate (in s^-1) for binding sites
         
         % PARAMETERS RELATED TO FORWARD AND REVERSE RATES %
         f_parameters = 5e2;
@@ -71,20 +76,27 @@ classdef halfSarc < handle
             obj.no_of_x_bins = numel(obj.x_bins);
             
             % Set up rates
-            %%% D --> A rate (symmetric) %%%
+%             
+%             obj.f(obj.x_bins<10) = obj.f_parameters(1) * obj.bin_width * ...
+%                 exp(-obj.k_cb*5*((obj.x_bins(obj.x_bins<10) - 10).^2)/(1e18*1.381e-23*288));
+%             obj.f(obj.x_bins>=10) = obj.f_parameters(1) * obj.bin_width * ...
+%                 exp(-obj.k_cb*5*((obj.x_bins(obj.x_bins>=10) - 10).^2)/(1e18*1.381e-23*288));
             obj.f = zeros(size(obj.x_bins));
-            obj.f = obj.f_parameters(1) * obj.bin_width * ...
-                exp(-obj.k_cb*10*((obj.x_bins).^2)/(1e18*1.381e-23*288));
-            
+            obj.f(obj.x_bins<-1) = obj.f_parameters(1) * obj.bin_width * ...
+                exp(-obj.k_cb*5*(2*(obj.x_bins(obj.x_bins<-1)).^2)/(1e18*1.381e-23*288));
+            obj.f(obj.x_bins>=-1) = obj.f_parameters(1) * obj.bin_width * ...
+                exp(-obj.k_cb*5*(2*(obj.x_bins(obj.x_bins>=-1)).^2)/(1e18*1.381e-23*288));
 
-            %%% A --> D rate (asymmetric) %%%
+
             obj.g = zeros(size(obj.x_bins)); %Preallocate
-            
             obj.g(obj.x_bins<-6) = obj.g_parameters(1) + ...
-                 abs(0.2*((obj.x_bins(obj.x_bins<-6)+6).^3));
+                 abs(obj.g_parameters(2)*2e1*((obj.x_bins(obj.x_bins<-6)+6).^3));
+%             obj.g(obj.x_bins<=-15) = 1000;
+            
             obj.g(obj.x_bins>=-3) = obj.g_parameters(1) + ...
-                 0.3*((obj.x_bins(obj.x_bins>=-3)+3).^3);
-            obj.g = obj.g + 1;
+                 obj.g_parameters(2)*3e1*((obj.x_bins(obj.x_bins>=-3)+3).^3);
+             
+             obj.g = obj.g + 1;
             
             % Limit max values
             obj.f(obj.f>obj.max_rate) = obj.max_rate;
@@ -98,12 +110,10 @@ classdef halfSarc < handle
         % Other methods
         function update_filamentOverlap(obj)
             
-            x_no_overlap = obj.hs_length - obj.thick_filament_length; %Length of thin filament w/0 overlapping thick filament
-            
-            x_overlap = obj.thin_filament_length - x_no_overlap; %
-            
+            x_no_overlap = obj.hs_length - obj.thick_filament_length;
+            x_overlap = obj.thin_filament_length - x_no_overlap;
             max_x_overlap = obj.thick_filament_length -  ...
-                obj.bare_zone_length; %Region of thick filament containing myosin heads
+                obj.bare_zone_length;
             
             if (x_overlap<0)
                 obj.f_overlap=0;
@@ -131,8 +141,26 @@ classdef halfSarc < handle
             obj.f_bound = sum(obj.bin_pops);
         end
         
-        function update_thinFilament(obj)
-                        
+        function update_thinFilament(obj,time_step)
+            
+            % Code implements an Euler step to update the fraction of sites that
+            % are available for heads to bind to
+            
+%             % Binding sites that are switching on
+%             obj.Ca(obj.Ca<10^(-9)) = 0;
+%             df_inc = obj.a_on * obj.Ca * (obj.f_overlap - obj.f_activated);
+%             
+%             % Binding sites that are switching off
+%             df_dec = obj.a_off * (obj.f_activated - obj.f_bound);
+%             
+%            
+%             
+%             % Euler step
+%             obj.f_activated = obj.f_activated +  ...
+%                 time_step * (df_inc - df_dec);
+%             
+%             obj.f_activated(obj.f_activated<1e-4) = 0;
+            
              obj.f_activated = obj.f_activated;
             
         end
@@ -216,8 +244,13 @@ classdef halfSarc < handle
             % Also, perform calculations that are dependent on hs_length
             if shift == 1
                 obj.shift_cbDist(delta_hsl);
+
+
             end
                             
+
+            
+            
             % Calculate forces
             obj.calcForces;
             
