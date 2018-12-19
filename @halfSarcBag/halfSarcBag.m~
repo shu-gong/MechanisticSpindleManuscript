@@ -100,19 +100,19 @@ classdef halfSarcBag < handle
             max_x_overlap = obj.thick_filament_length -  ...
                 obj.bare_zone_length; %Region of thick filament containing myosin heads
             
-            if (x_overlap<0) %This is impossible in a sarcomere
+            if (x_overlap<0) %This is 
                 obj.f_overlap=0;
             end
             
-            if ((x_overlap>0)&&(x_overlap<=max_x_overlap)) %Operating range of half sarcomere
+            if ((x_overlap>0)&&(x_overlap<=max_x_overlap))
                 obj.f_overlap = x_overlap/max_x_overlap;
             end
             
-            if (x_overlap>max_x_overlap) %This is impossible in a sarcomere
+            if (x_overlap>max_x_overlap)
                 obj.f_overlap=1;
             end
             
-            if (obj.hs_length<obj.thin_filament_length) %This doesn't happen unless hsl < thin filament length
+            if (obj.hs_length<obj.thin_filament_length)             %This doesn't happen unless hsl < thin filament length
                 obj.f_overlap = 1.0 + obj.k_falloff * ...
                     (obj.hs_length - obj.thin_filament_length);
                 if (obj.f_overlap < 0)
