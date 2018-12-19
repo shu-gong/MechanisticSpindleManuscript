@@ -17,30 +17,30 @@ for a = 1
             %CHECK IF SLACK
             %ADJUST HS LENGTH SO FORCE IS BACK TO 0
 %             hs.hs_force = 0;
-            xD = find_hsl_from_force(hsB,0.0);
-            xS = find_hsl_from_force(hsC,0.0);
+            xB = find_hsl_from_force(hsB,0.0);
+            xC = find_hsl_from_force(hsC,0.0);
           
             
-            if hsB.cmd_length<xD
+            if hsB.cmd_length<xB
                 hsB.hs_force = 0;
-                slack_modeD = 1;
+                slack_modeB = 1;
 %                 new_length = max(x,hs.cmd_length);
-                adj_lengthD = xD - hsB.hs_length;
-                hsB.forwardStep(0.0,adj_lengthD,0,0,0,1);
+                adj_lengthB = xB - hsB.hs_length;
+                hsB.forwardStep(0.0,adj_lengthB,0,0,0,1);
             else
-                slack_modeD = 0;
+                slack_modeB = 0;
             end
             
-            if hsC.cmd_length<xS
+            if hsC.cmd_length<xC
                 hsC.hs_force = 0;
-                slack_modeS = 1;
-                adj_lengthS = xS - hsC.hs_length;
+                slack_modeC = 1;
+                adj_lengthS = xC - hsC.hs_length;
                 hsC.forwardStep(0.0,adj_lengthS,0,0,0,1);
             else
-                slack_modeS = 0;
+                slack_modeC = 0;
             end
             
-            if slack_modeD
+            if slack_modeB
                %CROSS BRIDGE EVOLUTION TAKES UP SLACK  
                % Any cb cycling here must be applied to shortening
                % against zero load.
@@ -50,7 +50,7 @@ for a = 1
                 
                % Next, we iteratively search for the sarcomere length
                % that would give us zero load
-                xD = find_hsl_from_force(hsB,0);
+                xB = find_hsl_from_force(hsB,0);
                 
                % We then compute the new hs length applied to the
                % sarcomere based on whether the command length is now
@@ -59,18 +59,18 @@ for a = 1
                % length adjustment is the the calculated new length - the 
                % current measurement of hs length. 
                
-                new_lengthD = max(xD,hsB.cmd_length);
-                adj_lengthD = new_lengthD - hsB.hs_length;
+                new_lengthD = max(xB,hsB.cmd_length);
+                adj_lengthB = new_lengthD - hsB.hs_length;
                 
                % Finally, we shift the distribution by the adjusted length
-                hsB.forwardStep(time_step,adj_lengthD,delta_cdl(a,i),0,0,1);
+                hsB.forwardStep(time_step,adj_lengthB,delta_cdl(a,i),0,0,1);
                 
             else %length control
-                delta_hslD = delta_cdl(a,i);
-                hsB.forwardStep(time_step,delta_hslD,delta_cdl(a,i),delta_f_activated(a,i),1,1);
+                delta_hslB = delta_cdl(a,i);
+                hsB.forwardStep(time_step,delta_hslB,delta_cdl(a,i),delta_f_activated(a,i),1,1);
             end
             
-            if slack_modeS
+            if slack_modeC
                 %CROSS BRIDGE EVOLUTION TAKES UP SLACK
                 % Any cb cycling here must be applied to shortening
                 % against zero load.
@@ -80,7 +80,7 @@ for a = 1
                 
                 % Next, we iteratively search for the sarcomere length
                 % that would give us zero load
-                xS = find_hsl_from_force(hsC,0);
+                xC = find_hsl_from_force(hsC,0);
                 
                 % We then compute the new hs length applied to the
                 % sarcomere based on whether the command length is now
@@ -89,7 +89,7 @@ for a = 1
                 % length adjustment is the the calculated new length - the
                 % current measurement of hs length.
                 
-                new_lengthS = max(xS,hsC.cmd_length);
+                new_lengthS = max(xC,hsC.cmd_length);
                 adj_lengthS = new_lengthS - hsC.hs_length;
                 
                 % Finally, we shift the distribution by the adjusted length
@@ -113,8 +113,6 @@ for a = 1
         dataB(a).hs_force(i) = hsB.hs_force;
         dataB(a).hs_length(i) = hsB.hs_length;
         dataB(a).cmd_length(i) = hsB.cmd_length;
-        dataB(a).Ca(i) = hsB.Ca;
-        dataB(a).slack(i) = hsB.slack;
         dataB(a).bin_pops(:,i) = hsB.bin_pops;
         dataB(a).no_detached(i) = hsB.no_detached;
         
@@ -128,8 +126,6 @@ for a = 1
         dataC(a).hs_force(i) = hsC.hs_force;
         dataC(a).hs_length(i) = hsC.hs_length;
         dataC(a).cmd_length(i) = hsC.cmd_length;
-        dataC(a).Ca(i) = hsC.Ca;
-        dataC(a).slack(i) = hsC.slack;
         dataC(a).bin_pops(:,i) = hsC.bin_pops;
         dataC(a).no_detached(i) = hsC.no_detached;
         

@@ -63,7 +63,7 @@ classdef halfSarcChain < handle
     methods
         
         % BUILD halfSarcChain OBJECT %
-        function obj = halfSarcStatic(varargin)
+        function obj = halfSarcChain(varargin)
             
             % Set up x_bins
             obj.x_bins = obj.bin_min:obj.bin_width:obj.bin_max;
@@ -190,7 +190,6 @@ classdef halfSarcChain < handle
                         
             obj.cmd_length = obj.cmd_length + delta_cdl;
             obj.hs_length = obj.hs_length + delta_hsl;
-            obj.slack = obj.hs_length - obj.cmd_length;
             
 %             obj.Ca = obj.Ca + delta_Ca;
             obj.f_activated = obj.f_activated + delta_f_activated;
@@ -202,7 +201,7 @@ classdef halfSarcChain < handle
                                 % Calculate the change in f_activated
                 obj.update_filamentOverlap();
                 obj.update_fracBound();
-                obj.update_thinFilament(time_step);
+                obj.update_thinFilament();
                 obj.evolve_cbDist(time_step);
 
             end

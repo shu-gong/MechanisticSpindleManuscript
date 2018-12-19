@@ -1,8 +1,9 @@
 %% Spindle model - Triangle and RampHold Force
-load(['..' filesep 'data' filesep '2018-08-23' filesep 'triAndRamp 2018-08-23.mat']); % Use this for 
-time = dataS(1).t;
-dataD = dataD(1);
-dataS = dataS(1);
+% load(['..' filesep 'data' filesep '2018-08-23' filesep 'triAndRamp 2018-08-23.mat']); % Use this for 
+load(['..' filesep 'data' filesep 'TEST.mat']);
+time = dataC(1).t;
+dataD = dataB(1);
+dataS = dataC(1);
 L0 = dataS.hs_length(1);
 
 % vertical lines corresponding to xb distributions in figure
