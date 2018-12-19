@@ -38,7 +38,7 @@
     end
     
     parfor a = 1:numSims
-        [hsB(a),dataB(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
+        [hsB(a),dataD(a),hsS(a),dataS(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
         disp(['Done with simulation number ' num2str(a)])
     end
     
@@ -72,7 +72,7 @@
     end
     
     parfor a = 1:numSims
-        [hsB(a),dataB(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
+        [hsB(a),dataD(a),hsS(a),dataS(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
         disp(['Done with simulation number ' num2str(a)])
     end
     
@@ -113,7 +113,7 @@
     end
     
     parfor a = 1:numSims
-        [hsB(a),dataB(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
+        [hsB(a),dataD(a),hsS(a),dataS(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
         
         disp(['Done with simulation number ' num2str(a)])
     end
@@ -156,7 +156,7 @@
     end
     
     parfor a = 1:numSims
-        [hsB(a),dataB(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
+        [hsB(a),dataD(a),hsS(a),dataS(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
         disp(['Done with simulation number ' num2str(a)])
     end
     
@@ -191,7 +191,7 @@
     end
     
     parfor a = 1:numSims
-        [hsB(a),dataB(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
+        [hsB(a),dataD(a),hsS(a),dataS(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
         disp(['Done with simulation number ' num2str(a)])
     end
     
@@ -204,6 +204,7 @@
     pertStart = 7000;
     numSims = 1;       % Number of simulations to run in parallel
     delta_cdl = zeros(numSims,numel(t)); % change in command length for all sims
+%     delta_Ca = zeros(numSims,numel(t)); % change in [Ca] for all sims
     delta_f_activated = zeros(numSims,numel(t));
     strDur = 2e4; % duration of stretch period
     lsf = cos(pi/6); % length scaling factor to account for pinnation & elastic attachment of fibers
@@ -221,7 +222,7 @@
     end
     
     parfor a = 1:numSims
-        [hsB(a),dataB(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
+        [hsB(a),dataD(a),hsS(a),dataS(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
         disp(['Done with simulation number ' num2str(a)])
     end
     
@@ -261,14 +262,53 @@
     end
     
     parfor a = 1:numSims
-        [hsB(a),dataB(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
+        [hsB(a),dataD(a),hsS(a),dataS(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
         disp(['Done with simulation number ' num2str(a)])
     end
     
     beep; toc;
 
+    %% PRTS
+    
+    %% Chirp
+    clear,clc
+    tic
+    time_step = 0.001; %Temporal precision
+    t = 0:time_step:40; % Time vector
+    pertStart = 5e3;
+    numSims = 1;       % Number of simulations to run in parallel
+    delta_cdl = zeros(numSims,numel(t)); % change in command length for all sims
+%     delta_Ca = zeros(numSims,numel(t)); % change in [Ca] for all sims
+    delta_f_activated = zeros(numSims,numel(t));
+    strDur = 3e4; % duration of activation period
+    lsf = 0.8; % length scaling factor to account for pinnation & elastic attachment of fibers
+    
+    L = 0.5*sin(0.167*pi*(0:0.001:30).^2);
+    deltaL = diff(L);
+    
+    deltaL = [zeros(1,5000) deltaL zeros(1,5001)];
+    
+    for a = 1:numSims
+        for i = 1:numel(t)
+            if i == 1
+                delta_f_activated(a,i) = 0.3;
+            elseif i > pertStart && i < pertStart + strDur
+                delta_cdl(a,i) = deltaL(i);
+                
+            end
+        end
+    end
+    
+    parfor a = 1:numSims
+        [hsB(a),dataD(a),hsS(a),dataS(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
+        disp(['Done with simulation number ' num2str(a)])
+    end
+    
+    beep; toc;
 
-    %% Alpha-gamma isometric ramp
+    %% Isometric
+    
+    %% Alpha-gamma ramp
     
     clear,clc
     tic
@@ -300,7 +340,7 @@
     end
     
     parfor a = 1:numSims
-        [hsB(a),dataB(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
+        [hsB(a),dataD(a),hsS(a),dataS(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
         disp(['Done with simulation number ' num2str(a)])
     end
     
