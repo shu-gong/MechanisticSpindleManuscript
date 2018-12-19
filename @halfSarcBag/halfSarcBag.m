@@ -1,4 +1,4 @@
-classdef halfSarc < handle
+classdef halfSarcBag < handle
     
     properties
         % These properties can be accessed from the driver script
