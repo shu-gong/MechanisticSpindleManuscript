@@ -305,5 +305,27 @@
     end
     
     beep; toc;
+    
+ %% Elek et al. 1990 simulations (need to load mtu data from other sim)
+
+ clear, clc
+ load('/Users/kylepblum/TingLab/Manuscripts/2020eLife - MechanisticSpindle/mechanistic/data/mtu_sim_data.mat');
+ tic
+ time_step = 0.001;
+t = -2:time_step:6.0;
+
+delta_cdl = [zeros(1,2000) diff(mtu.fas_length) 0];
+delta_f_activated = zeros(size(delta_cdl));
+
+delta_f_activated(50) = 0.5;
+lsf = 0.9;
+
+delta_cdl = delta_cdl*lsf;
+
+[hsB,dataB,hsC,dataC] = sarcSimDriver(t,delta_f_activated,delta_cdl);
+
+toc
+
+
 
     

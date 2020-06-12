@@ -430,4 +430,46 @@ for a = 1:numel(dataS)
 end
 
 
+%% Musculotendon simulations
+
+load(['..' filesep 'data' filesep 'elek_simGamma.mat'])
+load(['..' filesep 'data' filesep 'mtu_sim_data.mat'])
+
+[r,rs,rd] = sarc2spindle(dataB,dataC,1,1,0.03,1,0.05); 
+
+plot(r(2000:end))
+
+t = -2:0.001:6;
+
+figure(1);
+clf;
+% Musculotendon 
+subplot(4,1,1); hold on
+plot(t(2001:end),mtu.length - 1300)
+plot(t(2001:end),mtu.fas_length - 1300)
+plot(t(2001:end),mtu.ten_length)
+legend('\Delta MT len.','\Delta fas. len.','\Delta ten. len.')
+
+% Musculotendon Force
+subplot(4,1,2); hold on
+plot(t(2001:end),mtu.force)
+plot(t(2001:end),mtu.pm_force + mtu.fas_force)
+plot(t(2001:end),mtu.pm_force)
+legend('Fiber force','MTU force','Perimysial force')
+
+%Extrafusal vs. intrafusal force
+subplot(4,1,3); hold on
+plot(t(2001:end),mtu.force)
+plot(t(2001:end),dataB.hs_force(2001:end))
+
+
+
+
+% Spindle rate
+subplot(4,1,4); hold on
+plot(t(2001:end),r(2001:end))
+plot(t(2001:end),rd(2001:end) - 0.05)
+plot(t(2001:end),rs(2001:end) - 0.05)
+legend('Ia firing rate','Bag comp.','Chain comp.')
+
 
