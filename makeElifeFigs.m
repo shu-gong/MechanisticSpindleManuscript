@@ -432,44 +432,52 @@ end
 
 %% Musculotendon simulations
 
-load(['..' filesep 'data' filesep 'elek_simGamma.mat'])
-load(['..' filesep 'data' filesep 'mtu_sim_data.mat'])
+load(['..' filesep 'data' filesep 'mt_sim_data_lA_lG.mat'])
 
 [r,rs,rd] = sarc2spindle(dataB,dataC,1,1,0.03,1,0.05); 
 
-plot(r(2000:end))
 
-t = -2:0.001:6;
+t = 0:0.001:10;
 
-figure(1);
+figure(1); set(gcf, 'Color', 'White')
 clf;
 % Musculotendon 
 subplot(4,1,1); hold on
-plot(t(2001:end),mtu.length - 1300)
-plot(t(2001:end),mtu.fas_length - 1300)
-plot(t(2001:end),mtu.ten_length)
-legend('\Delta MT len.','\Delta fas. len.','\Delta ten. len.')
+set(gca,'FontName','Helvetica','FontSize',8,'XTick',[])
+plot(t,mtData.cmd_length - 1300)
+plot(t,mtData.hs_length - 1300)
+plot(t,mtData.cmd_length - mtData.hs_length)
+legend('\Delta MT len.','\Delta fas. len.','\Delta ten. len.','Location','northwest','box','off')
 
 % Musculotendon Force
 subplot(4,1,2); hold on
-plot(t(2001:end),mtu.force)
-plot(t(2001:end),mtu.pm_force + mtu.fas_force)
-plot(t(2001:end),mtu.pm_force)
-legend('Fiber force','MTU force','Perimysial force')
+set(gca,'FontName','Helvetica','FontSize',8,'XTick',[])
+plot(t,mtData.hs_force)
+plot(t,mtData.pm_force + mtData.hs_force)
+plot(t,mtData.pm_force)
+legend('Fiber force','MTU force','Perimysial force','Location','northwest','box','off')
 
 %Extrafusal vs. intrafusal force
 subplot(4,1,3); hold on
-plot(t(2001:end),mtu.force)
-plot(t(2001:end),dataB.hs_force(2001:end))
+set(gca,'FontName','Helvetica','FontSize',10)
+rectangle('Position',[6.4 0 1.6 4e5],'FaceColor',[0.9 0.9 0.9],...
+     'EdgeColor',[0.9 0.9 0.9]);
+
+plot(t,mtData.hs_force)
+plot(t,dataB.hs_force)
+legend('Extrafusal','Intrafusal','Location','northwest','box','off')
+corr_coef = corrcoef(mtData.hs_force(6400:8000),dataB.hs_force(6400:8000));
+text(7,1.75e5,['r = ' num2str(round(corr_coef(2)*1000)/1000)],'FontName','Helvetica','FontSize',10);
 
 
 
 
 % Spindle rate
 subplot(4,1,4); hold on
-plot(t(2001:end),r(2001:end))
-plot(t(2001:end),rd(2001:end) - 0.05)
-plot(t(2001:end),rs(2001:end) - 0.05)
-legend('Ia firing rate','Bag comp.','Chain comp.')
+set(gca,'FontName','Helvetica','FontSize',10)
+plot(t,r)
+% plot(t,rd - 0.05)
+% plot(t,rs - 0.05)
+legend('Ia firing rate','Location','northwest','box','off')
 
 
