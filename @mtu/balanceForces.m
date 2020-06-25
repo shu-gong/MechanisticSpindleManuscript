@@ -1,6 +1,6 @@
 function new_length = balanceForces(obj)
 
-x_adj = fzero(@(x) tempForce(x,obj), 0, optimset('display','on'));
+x_adj = fzero(@(x) tempForce(x,obj), 0, optimset('display','off','TolFun',1e-10));
 
 new_length = obj.hs_length + x_adj;
 end

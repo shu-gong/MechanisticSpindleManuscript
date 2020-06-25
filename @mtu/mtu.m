@@ -198,9 +198,8 @@ classdef mtu < handle
             obj.hs_length = obj.hs_length + delta_hsl;
             
 %             obj.Ca = obj.Ca + delta_Ca;
+
             obj.f_activated = obj.f_activated + delta_f_activated;
-
-
             
             % Change cb distribution based on cycling kinetics
             if evolve == 1
