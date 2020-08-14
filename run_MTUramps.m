@@ -77,7 +77,7 @@ t = 0:time_step:5.5; % Time vector
 numSims = 4;
 
 % load('mtSim_isoRamp_AGCoAct.mat')
-load('mtSim_ramps.mat')
+load('../data/mtSim_ramps.mat')
 
 pltIdx = 3000:5500;
 
@@ -91,12 +91,12 @@ clf;
 
 % gamma activation
 subplot(5,6,[3 4]); hold on
-set(gca,'XTick',[],'TickDir','out'), ylabel('gamma act.')
+set(gca,'XTick',[],'TickDir','out','FontName','Helvetica'), ylabel('gamma act.')
 axis([3 5.5 0 1])
 plot(t(pltIdx),zeros(size(dataB(1).f_activated(pltIdx))),'Color',[0 0 0])
 
 subplot(5,6,[5 6]); hold on
-set(gca,'XTick',[],'YTick',[],'TickDir','out')
+set(gca,'XTick',[],'YTick',[],'TickDir','out','FontName','Helvetica')
 axis([3 5.5 0 1])
 plot(t(pltIdx),dataB(3).f_activated(pltIdx),'Color',[0 0 0],'LineWidth',2)
 
@@ -104,14 +104,14 @@ colors = [0.3 0.8 0.4; 0.7 0.3 0.7; 0.3 0.8 0.4; 0.7 0.3 0.7];
 
 % Musculotendon 
 subplot(5,6,[19 20 25 26]); hold on
-set(gca,'XTick',[],'TickDir','out'), ylabel('length')
+set(gca,'XTick',[],'TickDir','out','FontName','Helvetica'), ylabel('length')
 for a = [4]
     plot(t(pltIdx),mtData(a).hs_length(pltIdx) - mtData(a).hs_length(1),'Color',colors(a,:))
 end
 plot(t(pltIdx),mtData(a).cmd_length(pltIdx) - mtData(a).cmd_length(1),'Color',[0 0 0])
 
 subplot(5,6,[7 8 13 14]); hold on
-set(gca,'XTick',[],'TickDir','out'), ylabel('length')
+set(gca,'XTick',[],'TickDir','out','FontName','Helvetica'), ylabel('length')
 for a = [1]
     plot(t(pltIdx),mtData(a).hs_length(pltIdx) - mtData(a).hs_length(1),'Color',colors(a,:))
 end
@@ -160,33 +160,25 @@ for a = 1:numSims
     
     if a == 1
         subplot(5,6,[9 10 15 16])
+        set(gca,'XTickLabels',[],'TickDir','out','FontName','Helvetica')
+        
     elseif a == 2
-        subplot(5,6,[21 22 27 28])  
+        subplot(5,6,[21 22 27 28])
+        set(gca,'TickDir','out','FontName','Helvetica')
+        
     elseif a == 3
         subplot(5,6,[11 12 17 18])
+        set(gca,'YTickLabels',[],'XTickLabels',[],'TickDir','out','FontName','Helvetica')
+        
     elseif a == 4
-        subplot(5,6,[23 24 29 30])    
-    end
-    axis([3 5.5 0 60])
-    if a == 1
-        set(gca,'XTickLabels',[],'TickDir','out')
-    elseif a == 2
-        set(gca,'YTickLabels',[],'XTickLabels',[],'TickDir','out')
-    elseif a == 3
-        set(gca,'TickDir','out')
-    elseif a == 4
-        set(gca,'YTickLabels',[],'TickDir','out')
+        subplot(5,6,[23 24 29 30])
+        set(gca,'YTickLabels',[],'TickDir','out','FontName','Helvetica')
     end
     
+    axis([3 5.5 0 60])
     hold on;
     plot(st(2:end),IFR,'.','Color',colors(a,:))
     plot([st; st],[0 5],'Color',colors(a,:),'LineWidth',0.2)
-    if a < 3
-        plot(t,dataB(a).hs_force(pltIdx)/1e4,'Color',colors(a,:))
-        plot(t,r*100,'Color',colors(a,:),'LineStyle','--')
-    else
-        plot(t,dataB(a).hs_force(pltIdx)/1e4,'Color',colors(a,:),'LineStyle','-.','Linewidth',2)
-        plot(t,r*50,'Color',colors(a,:),'LineWidth',2)
-    end
-    
+    plot(t,r*40,'Color',colors(a,:),'LineStyle','-','LineWidth',2)
+        
 end

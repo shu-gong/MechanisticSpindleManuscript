@@ -143,9 +143,9 @@ classdef halfSarcBag < handle
             
 %             obj.no_detached = max([0 obj.f_overlap-obj.f_bound]);
             obj.no_detached = max([0 obj.f_activated-obj.f_bound]);
-%             obj.no_detached = max([0
-%             min(obj.f_activated,obj.f_overlap)-obj.f_bound]); %USE THIS
-%             TO ESTIMATE change in force with filament overlap
+%             obj.no_detached = max([0 min(obj.f_activated,obj.f_overlap)-obj.f_bound]); %USE THIS TO ESTIMATE change in force with filament overlap
+            
+%             obj.no_detached = max([0 obj.f_overlap * obj.f_activated - obj.f_bound]);
             y = [obj.no_detached ; obj.bin_pops];
             
             % Evolve the system

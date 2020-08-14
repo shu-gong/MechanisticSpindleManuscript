@@ -52,16 +52,16 @@ delta_cdl = zeros(numSims,length(t));
 delta_act = 1e-4;
 act_start = 1500;
 delta_f_activated = zeros(size(t));
-delta_f_activated(1) = 0.3;
+delta_f_activated(1) = 0.2;
 delta_f_activated(act_start:act_start+act_dura-2) = delta_act*4;
 
-for a = 1:numSims
+for a = 1:4%1:numSims
     delta_cdl(a,:) = [0 diff(mtData(a).hs_length)];
 end
 
 delta_cdl(:,1:1000) = 0; %this is to get rid of settling from mt sims
 
-parfor a = 1:numSims
+parfor a = 1:4%:numSims
     [hsB(a),dataB(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated,delta_cdl(a,:));
 end
 toc;

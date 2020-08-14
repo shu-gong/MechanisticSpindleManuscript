@@ -52,7 +52,7 @@
     time_step = 0.001; %Temporal precision
     t = -7:time_step:6; % Time vector
     pertStart = 7000;
-    numSims = 10;       % Number of simulations to run in parallel
+    numSims = 4;       % Number of simulations to run in parallel
     delta_cdl = zeros(numSims,numel(t)); % change in command length for all sims
 %     delta_Ca = zeros(numSims,numel(t)); % change in [Ca] for all sims
     delta_f_activated = zeros(numSims,numel(t));
@@ -72,7 +72,7 @@
     end
     
     parfor a = 1:numSims
-        [hsB(a),dataB(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
+        [hsB(a),dataB1(a),hsC(a),dataC(a)] = sarcSimDriver(t,delta_f_activated(a,:),delta_cdl(a,:));
         disp(['Done with simulation number ' num2str(a)])
     end
     
