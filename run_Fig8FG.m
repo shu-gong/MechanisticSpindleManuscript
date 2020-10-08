@@ -23,10 +23,7 @@
     end
     
     parfor a = 1:numSims
-        
         mtData(a) = musTenDriver(t,delta_f_activated(a,:),delta_cdl);
-        
-%         mtData(a).pm_force = 1e3 * (mtData(a).cmd_length - 1200) + 1e-10 * exp(mtData(a).cmd_length/40); %perimysium
     end
     
     toc;
@@ -78,14 +75,15 @@ for a = 1:numSims
     plot(dataB(a).hs_length); hold on
 end
 
-%% Plot overall pulse results as sanity check 
+%% Plot overall results
 time_step = 0.001; %Temporal precision
 t = 0:time_step:3.5; % Time vector
 
 numSims = 16;
 
 % load('mtSim_isoRamp_AGCoAct.mat')
-load('mtSim_isoRamp_noGamma.mat')
+% load(['..' filesep 'data' filesep 'mtSim_isoRamp_noGamma.mat'])
+load(['..' filesep 'data' filesep 'mtSim_isoRamp_AGCoAct.mat'])
 
 pltIdx = 1250:3500;
 
@@ -108,7 +106,7 @@ end
 % Musculotendon Force
 subplot(4,1,2); hold on
 for a = 1:numSims
-    plot(t(pltIdx),mtData(a).hs_force(pltIdx),'Color',[0.5 0.5 0.5]/a)
+    plot(t(pltIdx),mtData(a).f_activated(pltIdx),'Color',[0.5 0.5 0.5]/a)
 %     plot(t,mtData(a).pm_force + mtData(a).hs_force)
 %     plot(t,mtData(a).pm_force)
 end

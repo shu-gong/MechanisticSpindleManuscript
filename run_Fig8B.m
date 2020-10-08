@@ -75,9 +75,9 @@ toc; beep;
 time_step = 0.001; %Temporal precision
 t = 0:time_step:15; % Time vector
 
-load('mtSim_isoPulses.mat')
+% load('mtSim_isoPulses.mat')
 
-[r,rs,rd] = sarc2spindle(dataB,dataC,1,2,0.1,1,0.05); 
+[r,rs,rd] = sarc2spindle(dataB,dataC,1,2,0.1,0.5,0.01); 
 
 mtData.pm_force = 1e3 * (mtData.cmd_length - 1200) + 1e-10 * exp(mtData.cmd_length/40); %perimysium
 
@@ -109,8 +109,8 @@ legend('Extrafusal','Intrafusal')
 % Spindle rate
 subplot(4,1,4); hold on
 plot(t,r)
-plot(t,rd - 0.05)
-plot(t,rs - 0.05)
+plot(t,rd)
+plot(t,rs)
 legend('Ia firing rate','Bag comp.','Chain comp.')
 
 %% Generate spikes with Bernoulli process
@@ -148,7 +148,7 @@ v(1) = -0.07; %initial condition
 u = (r-0.03)*5e-1; %scale r from spindle model into current
 u = interp1(0:0.001:15,u,t); %upsample to higher precision
 
-v_th = -0.04;   %threshold voltage for spike
+v_th = -0.0;   %threshold voltage for spike
 tsim = t;
 dt = 1e-4; %
 
@@ -169,13 +169,22 @@ st = tsim(sIdx);
 ISI = diff(st);
 IFR = 1./ISI;
 
-subplot(2,1,1)
+subplot(4,1,1)
 hold on;
-plot(st(2:end),IFR,'k.')
-plot([st; st],[0 10],'k')
+% plot(st(2:end),IFR,'k.')
+plot(t(1:10:end),mtData.hs_force/1e4)
+plot([st; st],[5 10],'k')
 
 
-subplot(2,1,2)
+subplot(4,1,2)
 hold on;
 plot(t(1:10:end),r)
+
+subplot(4,1,3)
+hold on;
+plot(t(1:10:end),mtData.hs_length)
+
+subplot(4,1,4)
+hold on;
+plot(t(1:10:end),mtData.hs_force)
 % plot(t,v)

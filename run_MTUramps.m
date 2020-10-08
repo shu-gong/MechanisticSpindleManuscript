@@ -1,4 +1,4 @@
-%% mtu isometric force pulse simulation
+%% mtu ramps
 clear,clc
 tic
 time_step = 0.001; %Temporal precision
@@ -70,7 +70,8 @@ for a = 1:numSims
     plot(dataB(a).cmd_length); hold on
 end
 
-%% Plot overall pulse results as sanity check 
+%% Plot overall results
+
 time_step = 0.001; %Temporal precision
 t = 0:time_step:5.5; % Time vector
 
