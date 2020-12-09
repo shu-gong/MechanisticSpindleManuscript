@@ -24,7 +24,7 @@
     
     mtData = musTenDriver(t,delta_f_activated,delta_cdl);
     
-    mtData.pm_force = 1e3 * (mtData.cmd_length - 1200) + 1e-10 * exp(mtData.cmd_length/40); %perimysium
+%     mtData.pm_force = 1e3 * (mtData.cmd_length - 1200) + 1e-10 * exp(mtData.cmd_length/40); %perimysium
 
     
     beep; toc;

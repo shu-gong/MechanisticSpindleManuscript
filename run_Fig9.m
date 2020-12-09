@@ -78,7 +78,7 @@ t = 0:time_step:5.5; % Time vector
 numSims = 4;
 
 % load('mtSim_isoRamp_AGCoAct.mat')
-load('../data/mtSim_ramps.mat')
+load('../manuscript_data/Fig9.mat')
 
 pltIdx = 3000:5500;
 
