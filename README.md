@@ -1,4 +1,4 @@
-##Model from "Diverse and complex muscle spindle afferent firing properties emerge from multiscale muscle mechanics"
+## Model from "Diverse and complex muscle spindle afferent firing properties emerge from multiscale muscle mechanics"
 
 This folder contains all the model code necessary to reproduce the simulations from our 2020 paper by Blum and colleagues published in eLife. 
 
