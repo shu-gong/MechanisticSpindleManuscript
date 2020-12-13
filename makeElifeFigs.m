@@ -1,9 +1,9 @@
 %% Figure 4: A
-load(['..' filesep 'manuscript_data' filesep 'Fig5ACD.mat']); %Just used data from dynamic index sims
+load(['..' filesep 'manuscript_data' filesep 'Fig5A.mat']); %Just used data from dynamic index sims
 idx = 6000:9500;
-time = dataS(1).t(idx);
-dataY = dataD(1);
-dataF = dataS(1);
+time = dataC(1).t(idx);
+dataY = dataB(1);
+dataF = dataC(1);
 L0 = dataF.hs_length(1);
 
 hfig = figure;
@@ -46,9 +46,9 @@ h_cdl = line(time,dataF.cmd_length(idx)/L0,'Parent',hlen,'color','k','LineWidth'
 %% Figure 4: D
 load(['..' filesep 'manuscript_data' filesep 'Fig4D.mat']);
 time = dataC(1).t;
-dataD = dataB(1);
-dataS = dataC(1);
-L0 = dataS.hs_length(1);
+dataB = dataB(1);
+dataC = dataC(1);
+L0 = dataC.hs_length(1);
 
 % vertical lines corresponding to xb distributions in figure
 % Note: did not use 55e2 or 655e1 in figure (too crowded)
@@ -75,12 +75,12 @@ lineStyles(lineStyles<0) = 0;
 
 
 
-h_D = line(time,dataD.hs_force/10^6,'Parent',hForce,'color',lineStyles(1,:),'LineWidth',1.5);
-h_S = line(time,dataS.hs_force/10^6,'Parent',hForce,'color',lineStyles(2,:),'LineWidth',1.5);
+h_D = line(time,dataB.hs_force/10^6,'Parent',hForce,'color',lineStyles(1,:),'LineWidth',1.5);
+h_S = line(time,dataC.hs_force/10^6,'Parent',hForce,'color',lineStyles(2,:),'LineWidth',1.5);
 
-h_cdl = line(time,dataS.cmd_length/L0,'Parent',hlen,'color','k','LineWidth',1.5);
-h_hslS = line(time,dataS.hs_length/L0,'Parent',hlen,'color',lineStyles(2,:),'LineWidth',1.5);
-h_hslD = line(time,dataD.hs_length/L0,'Parent',hlen,'color',lineStyles(1,:),'LineWidth',1.5);
+h_cdl = line(time,dataC.cmd_length/L0,'Parent',hlen,'color','k','LineWidth',1.5);
+h_hslS = line(time,dataC.hs_length/L0,'Parent',hlen,'color',lineStyles(2,:),'LineWidth',1.5);
+h_hslD = line(time,dataB.hs_length/L0,'Parent',hlen,'color',lineStyles(1,:),'LineWidth',1.5);
 
 for i = 1:numel(idx_vline)
     line([idx_vline(i) idx_vline(i)], [1300/L0 1400/L0],'Parent',hlen,'color','k'), hold on
@@ -89,8 +89,8 @@ end
 
 %% Figure 5: A,C,D
 load(['..' filesep 'manuscript_data' filesep 'Fig5A.mat']);
-time = dataS(1).t;
-L0 = dataS(1).hs_length(1);
+time = dataC(1).t;
+L0 = dataC(1).hs_length(1);
 idx = 6500:8000;
 
 
@@ -114,14 +114,14 @@ ylabel('Applied Length (L0)'), xlabel('time (s)')
 axis([time(idx(1)) time(idx(end)) 1300/L0 1400/L0])
 
 
-lineStyles = linspecer(numel(dataS));
+lineStyles = linspecer(numel(dataC));
 lineStyles = lineStyles - 0.1;
 lineStyles(lineStyles<0) = 0;
 
 
-for a = numel(dataS):-1:1
-    dataY = dataD(a);
-    dataF = dataS(a);
+for a = numel(dataC):-1:1
+    dataY = dataB(a);
+    dataF = dataC(a);
     [r,rs,rd] = sarc2spindle(dataY,dataF,kFs,kFd,kY,1,0.09);
     h_r = line(time(idx),r(idx),'Parent',haff,'Color',lineStyles(a,:),'linewidth',1.5); hold on;
     h_cdl = line(time(idx),dataF.cmd_length(idx)/L0,'Parent',hlen,'Color',lineStyles(a,:),'linewidth',1.5); hold on;
@@ -143,8 +143,8 @@ plot(acc,IB,'.','MarkerSize',10)
 %% Figure 6: A
 load(['..' filesep 'manuscript_data' filesep 'Fig6A.mat']);
 idx = 4000:17000;
-time = dataS(1).t(idx);
-L0 = dataS(1).hs_length(1);
+time = dataC(1).t(idx);
+L0 = dataC(1).hs_length(1);
 
 hfig = figure;
 set(hfig,'Color','White')
@@ -166,14 +166,14 @@ ylabel('Applied Length (L0)'), xlabel('time (s)')
 axis([time(1) time(end) 1300/L0 1400/L0])
 
 
-lineStyles = linspecer(numel(dataS));
+lineStyles = linspecer(numel(dataC));
 lineStyles = lineStyles - 0.1;
 lineStyles(lineStyles<0) = 0;
 
 
-for a = 1:numel(dataS)
-    dataY = dataD(a);
-    dataF = dataS(a);
+for a = 1:numel(dataC)
+    dataY = dataB(a);
+    dataF = dataC(a);
     [r,rs,rd] = sarc2spindle(dataY,dataF,kFs,kFd,kY,1,0.09);
     h_r = line(time,r(idx),'Parent',haff,'Color',lineStyles(a,:),'linewidth',1.5);
     h_cdl = line(time,dataF.cmd_length(idx)/L0,'Parent',hlen,'Color',lineStyles(a,:),'linewidth',1.5);
@@ -184,8 +184,8 @@ end
 
 %% Fig 6: B
 
-load(['..' filesep 'manuscript_data' filesep 'test4.mat']);
-time = dataS(1).t;
+load(['..' filesep 'manuscript_data' filesep 'Fig6B.mat']);
+time = dataC(1).t;
 
 hfig = figure;
 set(hfig,'Color','White')
@@ -202,8 +202,8 @@ ylabel('Normalized firing rate')
 axis([-1 11.5 -0.5 0.5])
 
 
-dataY = dataD;
-dataF = dataS;
+dataY = dataB;
+dataF = dataC;
 [r,rs,rd] = sarc2spindle(dataY,dataF,kFs,kFd,kY,0,0.09);
 h_r = line(time,r,'Parent',haff);
 h_cdl = line(time,dataF.cmd_length/1300-1,'Parent',haff);
@@ -213,10 +213,9 @@ h_cdl = line(time,dataF.cmd_length/1300-1,'Parent',haff);
 clear, clc
 
 load(['..' filesep 'manuscript_data' filesep 'Fig7A.mat']);
-% load(['..' filesep 'data' filesep 'test4.mat']);
 
-time = dataS(1).t;
-L0 = dataS(1).hs_length(1);
+time = dataC(1).t;
+L0 = dataC(1).hs_length(1);
 
 hfig = figure;
 set(hfig,'Color','White')
@@ -248,8 +247,8 @@ PR = []; %plateau rate
 %This part is for dynamic
 for a = [2:8]
     for b = [3]
-        dataY = dataD(a);
-        dataF = dataS(b);
+        dataY = dataB(a);
+        dataF = dataC(b);
         [r,rs,rd] = sarc2spindle(dataY,dataF,kFs,kFd,kY,1,0.09);
         h_r = line(time,r,'Parent',haff,'Color',[b/8 0 a/8],'LineWidth',1.5);
         h_cdl = line(time,dataF.cmd_length/L0,'Parent',hlen,'Color','k','LineWidth',1.5);
@@ -271,8 +270,8 @@ hfig3 = figure;
 set(hfig3,'Color','White')
 
 for i = length(BR)
-    dataY = dataD(a);
-    dataF = dataS(b);
+    dataY = dataB(a);
+    dataF = dataC(b);
     [r,rs,rd] = sarc2spindle(dataY,dataF,kFs,kFd,kY,1,0.09);
 end
 
