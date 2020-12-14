@@ -1,34 +1,34 @@
 %% mtu isometric force pulse simulation
-    clear,clc
-    tic
-    time_step = 0.001; %Temporal precision
-    t = 0:time_step:15; % Time vector
-    
-    delta_f_activated = zeros(size(t));
-    delta_cdl = zeros(size(t));
-    delta_f_activated(1) = 0.1;
-    
-    act_dura = 1000;
-    act_height = 0.4;  
-    act_width = 0.3;
-    delta_act = gausswin(act_dura,1/act_width)*act_height;
-    act_start = 2000;
-    act_start2 = 6000;
-    act_start3 = 8000;
-    
-    delta_f_activated(act_start:act_start+act_dura-2) = diff(delta_act);
-    delta_f_activated(act_start2:act_start2+act_dura-2) = diff(delta_act);
-    delta_f_activated(act_start3:act_start3+act_dura-2) = diff(delta_act)/2;
+clear,clc
+tic
+time_step = 0.001; %Temporal precision
+t = 0:time_step:15; % Time vector
+
+delta_f_activated = zeros(size(t));
+delta_cdl = zeros(size(t));
+delta_f_activated(1) = 0.1;
+
+act_dura = 1000;
+act_height = 0.4;
+act_width = 0.3;
+delta_act = gausswin(act_dura,1/act_width)*act_height;
+act_start = 2000;
+act_start2 = 6000;
+act_start3 = 8000;
+
+delta_f_activated(act_start:act_start+act_dura-2) = diff(delta_act);
+delta_f_activated(act_start2:act_start2+act_dura-2) = diff(delta_act);
+delta_f_activated(act_start3:act_start3+act_dura-2) = diff(delta_act)/2;
 
 %     delta_cdl(6500:6900) = 0.3;
-    
-    mtData = musTenDriver(t,delta_f_activated,delta_cdl);
-    
+
+mtData = musTenDriver(t,delta_f_activated,delta_cdl);
+
 %     mtData.pm_force = 1e3 * (mtData.cmd_length - 1200) + 1e-10 * exp(mtData.cmd_length/40); %perimysium
 
-    
-    beep; toc;
-    
+
+beep; toc;
+
 %% plot mtu as sanity check
 
 plot(mtData.hs_length);

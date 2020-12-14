@@ -1,33 +1,33 @@
 %% mtu isometric force pulse simulation
-    clear,clc
-    tic
-    time_step = 0.001; %Temporal precision
-    t = 0:time_step:3.5; % Time vector
-    
-    numSims = 16;
-    
-    delta_f_activated = zeros(numSims,length(t));
-    delta_cdl = zeros(size(t));
-    delta_f_activated(:,1) = 0.2;
-    
-    act_dura = 2000;
-    
-    delta_act = 1e-4;
-    act_start = 1500;
-    
-    mtData = struct('f_activated',[],'cb_force',[],'passive_force',[],...
-        'hs_force',[],'hs_length',[],'cmd_length',[]);
-    
-    for a = 1:numSims
-        delta_f_activated(a,act_start:act_start+act_dura-2) = delta_act*0.25*a;
-    end
-    
-    parfor a = 1:numSims
-        mtData(a) = musTenDriver(t,delta_f_activated(a,:),delta_cdl);
-    end
-    
-    toc;
-    
+clear,clc
+tic
+time_step = 0.001; %Temporal precision
+t = 0:time_step:3.5; % Time vector
+
+numSims = 16;
+
+delta_f_activated = zeros(numSims,length(t));
+delta_cdl = zeros(size(t));
+delta_f_activated(:,1) = 0.2;
+
+act_dura = 2000;
+
+delta_act = 1e-4;
+act_start = 1500;
+
+mtData = struct('f_activated',[],'cb_force',[],'passive_force',[],...
+    'hs_force',[],'hs_length',[],'cmd_length',[]);
+
+for a = 1:numSims
+    delta_f_activated(a,act_start:act_start+act_dura-2) = delta_act*0.25*a;
+end
+
+parfor a = 1:numSims
+    mtData(a) = musTenDriver(t,delta_f_activated(a,:),delta_cdl);
+end
+
+toc;
+
 %% plot mtu as sanity check
 figure; 
 for a = 1:numSims

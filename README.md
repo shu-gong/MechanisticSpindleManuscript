@@ -8,5 +8,5 @@ To reproduce the simulation figures from the eLife paper, use 'makeElifeFigs.m'.
 
 This is a static repository -- upon publication of the manuscript, no additional changes to this repo will be made, in order to preserve the published version of the model. Improvements and new features will be made available in a separate repository. 
 
-Please reach out if you have questions! --KPB
+Please reach out if you have questions! --KPB 
 

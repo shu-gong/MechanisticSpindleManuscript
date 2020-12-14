@@ -86,7 +86,6 @@ for i = 1:numel(idx_vline)
     line([idx_vline(i) idx_vline(i)], [1300/L0 1400/L0],'Parent',hlen,'color','k'), hold on
 end
 
-
 %% Figure 5: A,C,D
 load(['..' filesep 'manuscript_data' filesep 'Fig5A.mat']);
 time = dataC(1).t;
