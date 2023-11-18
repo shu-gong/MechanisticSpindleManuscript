@@ -1,4 +1,4 @@
-classdef halfSarcChain < handle
+classdef halfSarcBag < handle
     
     properties
         % These properties can be accessed from the driver script
@@ -23,9 +23,9 @@ classdef halfSarcChain < handle
         % INDIVIDUAL CROSSBRIDGE PARAMETERS %
         k_cb = 0.001;       % Cross-bridge stiffness in N m^-1
         power_stroke = 2.5;   % Cross-bridge power-stroke in nm
-                
+        
         % PARAMETERS RELATED TO FORWARD AND REVERSE RATES %
-        f_parameters = 2.5e1;
+        f_parameters = 5e2;
         g_parameters = [0.3 0.01 4000 50];
                             
 
@@ -54,16 +54,16 @@ classdef halfSarcChain < handle
                             % number of cbs in a half-sarcomere with a
                             % cross-sectional area of 1 m^2
                             
-        hsl_slack = 1200;   % slack length of half-sarcomere in nm
-        k_passive = 250;   % passive stiffness of half-sarcomere in
+        hsl_slack = 1050;   % slack length of half-sarcomere in nm
+        k_passive = 100;   % passive stiffness of half-sarcomere in
                             % N m^-2 nm^-1
 
     end
     
     methods
         
-        % BUILD halfSarcChain OBJECT %
-        function obj = halfSarcChain(varargin)
+        % BUILD halfSarcBag OBJECT %
+        function obj = halfSarcBag(varargin)
             
             % Set up x_bins
             obj.x_bins = obj.bin_min:obj.bin_width:obj.bin_max;
@@ -73,15 +73,15 @@ classdef halfSarcChain < handle
             %%% D --> A rate (symmetric) %%%
             obj.f = zeros(size(obj.x_bins)); %Preallocate
             obj.f = obj.f_parameters(1) * obj.bin_width * ...
-                exp(-obj.k_cb*5*(2*(obj.x_bins).^2)/(1e18*1.381e-23*288));
-           
+                exp(-obj.k_cb*10*((obj.x_bins).^2)/(1e18*1.381e-23*288));
+            
             %%% A --> D rate (asymmetric) %%%
             obj.g = zeros(size(obj.x_bins)); %Preallocate
             obj.g(obj.x_bins<-6) = obj.g_parameters(1) + ...
-                 abs(0.2*((obj.x_bins(obj.x_bins<-6)+6).^3));            
+                 abs(0.2*((obj.x_bins(obj.x_bins<-6)+6).^3));
             obj.g(obj.x_bins>=-3) = obj.g_parameters(1) + ...
-                 0.5*((obj.x_bins(obj.x_bins>=-3)+3).^3);
-            obj.g = obj.g + 3;
+                 0.3*((obj.x_bins(obj.x_bins>=-3)+3).^3);
+            obj.g = obj.g + 1;
             
             % Limit max values
             obj.f(obj.f>obj.max_rate) = obj.max_rate;
@@ -143,9 +143,9 @@ classdef halfSarcChain < handle
             
 %             obj.no_detached = max([0 obj.f_overlap-obj.f_bound]);
             obj.no_detached = max([0 obj.f_activated-obj.f_bound]);
-%             obj.no_detached = max([0
-%             min(obj.f_activated,obj.f_overlap)-obj.f_bound]); %USE THIS
-%             TO ESTIMATE change in force with filament overlap
+%             obj.no_detached = max([0 min(obj.f_activated,obj.f_overlap)-obj.f_bound]); %USE THIS TO ESTIMATE change in force with filament overlap
+            
+%             obj.no_detached = max([0 obj.f_overlap * obj.f_activated - obj.f_bound]);
             y = [obj.no_detached ; obj.bin_pops];
             
             % Evolve the system
@@ -219,7 +219,6 @@ classdef halfSarcChain < handle
         
     end
 end      
-    
             
             
             
