@@ -1,21 +1,23 @@
-classdef halfSarcBag < handle
+classdef mtu < handle
     
     properties
         % These properties can be accessed from the driver script
         
         % INITIAL STATE PARAMETERS %
-        cmd_length = 1300;
+        cmd_length = 1305;
         hs_length = 1300;   % the initial length of the half-sarcomere in nm
+        tendon_stiffness = 5e3;
         hs_force;           % the stress (in N m^(-2)) in the half-sarcomere
         f_overlap;
         f_bound;
         f_activated = 0.0;
         cb_force;
         passive_force;
+        
 
         % DISTRIBUTION BIN PARAMETERS %
-        bin_min = -20;      % min x value for myosin distributions in nm
-        bin_max = 20;       % max x value for myosin distributions in nm
+        bin_min = -10;      % min x value for myosin distributions in nm
+        bin_max = 10;       % max x value for myosin distributions in nm
         bin_width = 0.5;    % width of bins for myosin distributions in nm
         x_bins;             % array of x_bin values
         no_of_x_bins;       % no of x_bins
@@ -44,7 +46,7 @@ classdef halfSarcBag < handle
         bin_pops;           % number of heads bound in each bin
         no_detached;        % number of heads not attached to a binding site
         
-        max_rate = 5000;    % clip f or g values above this value
+        max_rate = 1000;    % clip f or g values above this value
         
         compliance_factor = 0.50;
                             % proportion of delta_hsl that the
@@ -55,15 +57,15 @@ classdef halfSarcBag < handle
                             % cross-sectional area of 1 m^2
                             
         hsl_slack = 1050;   % slack length of half-sarcomere in nm
-        k_passive = 100;   % passive stiffness of half-sarcomere in
+        k_passive = 1e2;   % passive stiffness of half-sarcomere in
                             % N m^-2 nm^-1
 
     end
     
     methods
         
-        % BUILD halfSarcBag OBJECT %
-        function obj = halfSarcBag(varargin)
+        % BUILD mtu OBJECT %
+        function obj = mtu(varargin)
             
             % Set up x_bins
             obj.x_bins = obj.bin_min:obj.bin_width:obj.bin_max;
@@ -73,15 +75,17 @@ classdef halfSarcBag < handle
             %%% D --> A rate (symmetric) %%%
             obj.f = zeros(size(obj.x_bins)); %Preallocate
             obj.f = obj.f_parameters(1) * obj.bin_width * ...
-                exp(-obj.k_cb*10*((obj.x_bins).^2)/(1e18*1.381e-23*288));
+                exp(-obj.k_cb*((obj.x_bins).^2)/(1e18*1.381e-23*288));
             
             %%% A --> D rate (asymmetric) %%%
             obj.g = zeros(size(obj.x_bins)); %Preallocate
             obj.g(obj.x_bins<-6) = obj.g_parameters(1) + ...
-                 abs(0.2*((obj.x_bins(obj.x_bins<-6)+6).^3));
+                 abs(0.2*((obj.x_bins(obj.x_bins<-6)+6).^2));
             obj.g(obj.x_bins>=-3) = obj.g_parameters(1) + ...
-                 0.3*((obj.x_bins(obj.x_bins>=-3)+3).^3);
-            obj.g = obj.g + 1;
+                 0.3*((obj.x_bins(obj.x_bins>=-3)+3).^2);
+
+    
+            obj.g = obj.g + 15;
             
             % Limit max values
             obj.f(obj.f>obj.max_rate) = obj.max_rate;
@@ -89,6 +93,8 @@ classdef halfSarcBag < handle
             
             % Initialize bins
             obj.bin_pops = zeros(obj.no_of_x_bins,1);
+            
+            obj.hs_force = (obj.cmd_length - obj.hs_length) * obj.tendon_stiffness;
             
         end
         
@@ -126,7 +132,7 @@ classdef halfSarcBag < handle
             obj.f_bound = sum(obj.bin_pops);
         end
         
-        function update_thinFilament(obj)
+        function update_thinFilament(obj) % More complicated thin filament kinetics can go here
                         
              obj.f_activated = obj.f_activated;
             
@@ -143,9 +149,9 @@ classdef halfSarcBag < handle
             
 %             obj.no_detached = max([0 obj.f_overlap-obj.f_bound]);
             obj.no_detached = max([0 obj.f_activated-obj.f_bound]);
-%             obj.no_detached = max([0 min(obj.f_activated,obj.f_overlap)-obj.f_bound]); %USE THIS TO ESTIMATE change in force with filament overlap
-            
-%             obj.no_detached = max([0 obj.f_overlap * obj.f_activated - obj.f_bound]);
+%             obj.no_detached = max([0
+%             min(obj.f_activated,obj.f_overlap)-obj.f_bound]); %USE THIS
+%             TO ESTIMATE change in force with filament overlap
             y = [obj.no_detached ; obj.bin_pops];
             
             % Evolve the system
@@ -192,9 +198,8 @@ classdef halfSarcBag < handle
             obj.hs_length = obj.hs_length + delta_hsl;
             
 %             obj.Ca = obj.Ca + delta_Ca;
+
             obj.f_activated = obj.f_activated + delta_f_activated;
-
-
             
             % Change cb distribution based on cycling kinetics
             if evolve == 1
@@ -214,6 +219,7 @@ classdef halfSarcBag < handle
                             
             % Calculate forces
             obj.calcForces;
+            
             
         end
         
